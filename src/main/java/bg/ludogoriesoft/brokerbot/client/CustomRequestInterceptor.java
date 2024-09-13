@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CustomRequestInterceptor implements RequestInterceptor {
 
-    @Value("${authorization_token}")
+    @Value("${bot.authorization.token}")
     private String token;
 
     @Override
