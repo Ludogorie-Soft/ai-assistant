@@ -15,5 +15,6 @@ public class CustomRequestInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate requestTemplate) {
         System.out.println("Token ---->>>> " + token);  // Temporary log to check if token is being injected
         requestTemplate.header("Authorization", token);
+        requestTemplate.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
     }
 }
