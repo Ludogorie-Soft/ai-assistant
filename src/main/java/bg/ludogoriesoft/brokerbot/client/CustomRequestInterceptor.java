@@ -13,6 +13,7 @@ public class CustomRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
+        System.out.println("Token ---->>>> " + token);  // Temporary log to check if token is being injected
         requestTemplate.header("Authorization", token);
     }
 }
