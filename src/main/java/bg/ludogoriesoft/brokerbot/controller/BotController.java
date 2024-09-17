@@ -10,7 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
@@ -26,10 +29,13 @@ public class BotController {
     }
 
     @PostMapping("/call")
-    public String makeCall(Model model, @ModelAttribute Request requestDto){
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> makeCall(@ModelAttribute Request requestDto){
         ResponseEntity<CallResponse> response = botService.makeCall(requestDto);
 
-        model.addAttribute("call_id", Objects.requireNonNull(response.getBody()).getCall_id());
-        return "call-response";
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("call_id", Objects.requireNonNull(response.getBody()).getCall_id());
+
+        return ResponseEntity.ok(responseBody);
     }
 }
