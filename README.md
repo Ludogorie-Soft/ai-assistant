@@ -1,2 +1,2 @@
 # ai-assistant
-using blind.ai
+using bland.ai
