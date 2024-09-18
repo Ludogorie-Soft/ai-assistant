@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Component
-@FeignClient(name = "bot-client", url = "https://api.bland.ai",
-        configuration = {CustomRequestInterceptor.class, FeignProxyConfig.class})
+@FeignClient(name = "bot-client", url = "https://api.bland.ai", configuration = CustomRequestInterceptor.class)
 public interface BotClient {
     @PostMapping("/v1/calls")
     ResponseEntity<CallResponse> makeCall(@RequestBody CallBody callBody);
