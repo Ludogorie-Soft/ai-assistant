@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Component
 @FeignClient(name = "bot-client", url = "https://api.bland.ai",
-        configuration = {CustomRequestInterceptor.class, FeignProxyConfig.class})
+        configuration = CustomRequestInterceptor.class)
 public interface BotClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/v1/calls")
