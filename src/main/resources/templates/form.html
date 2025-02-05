@@ -336,9 +336,9 @@
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                if (document.querySelector('.alert-danger')) {
-                    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                    loginModal.show(); // Автоматично отваря модала
+                let loginErrorMessage = "[[${loginError}]]";
+                if (loginErrorMessage && loginErrorMessage !== "null") {
+                    $('#loginModal').modal('show');
                 }
             });
         </script>
@@ -376,7 +376,6 @@
                 }
             });
         </script>
-
     </body>
 
     </html>
