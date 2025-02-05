@@ -26,7 +26,9 @@ public class BotService {
                                 "имота. Ти предоставям повече информация за него: %s",
                         request.getAssistantName(),
                         request.getPropertyInfo()));
-
+        if (request.getFlexRadio() != null) {
+            callRequestBody.setModel(request.getFlexRadio());
+        }
         callRequestBody.setPhone_number(request.getPhoneNumber());
 
         return botClient.makeCall(callRequestBody);
