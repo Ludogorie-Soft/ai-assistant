@@ -1,6 +1,9 @@
 package bg.ludogoriesoft.brokerbot.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
@@ -16,5 +19,6 @@ public class Request {
             "попитай дали ще имат тази възможност в следващите няколко дни. " +
             "Ако ти откажат им кажи, че ще се свържеш пак с тях следващите дни.";
     private String propertyInfo;
+    private String flexRadio;
 
 }

@@ -3,6 +3,8 @@ package bg.ludogoriesoft.brokerbot.controller;
 import bg.ludogoriesoft.brokerbot.model.CallResponse;
 import bg.ludogoriesoft.brokerbot.model.Request;
 import bg.ludogoriesoft.brokerbot.service.BotService;
+import bg.ludogoriesoft.brokerbot.user.User;
+import bg.ludogoriesoft.brokerbot.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,14 +25,16 @@ public class BotController {
     private final BotService botService;
 
     @GetMapping
-    public String getForm(Model model){
+    public String getForm(Model model) {
         model.addAttribute("request", new Request());
+        model.addAttribute("user", new User());
+        model.addAttribute("registerUser", new UserDto());
         return "form";
     }
 
     @PostMapping("/call")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> makeCall(@ModelAttribute Request requestDto){
+    public ResponseEntity<Map<String, Object>> makeCall(@ModelAttribute Request requestDto) {
         ResponseEntity<CallResponse> response = botService.makeCall(requestDto);
 
         Map<String, Object> responseBody = new HashMap<>();
