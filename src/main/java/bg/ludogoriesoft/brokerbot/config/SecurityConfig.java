@@ -33,15 +33,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/register", "/login").permitAll() // Позволява достъп до тези пътища без логин
+                        .requestMatchers("/","/register", "/login", "/test-confirm/**").permitAll()
                         .requestMatchers("/**").authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // URL на вашата логин страница
-                        .loginProcessingUrl("/login") // URL за обработка на формата
-                        .usernameParameter("email") // име на полето за email
-                        .passwordParameter("password") // име на полето за парола
-                        .defaultSuccessUrl("/", true) // успешен redirect
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/")
                         .failureHandler(authenticationFailureHandler())
                         .successHandler(authenticationSuccessHandler()))
@@ -71,7 +71,7 @@ public class SecurityConfig {
         return new SimpleUrlAuthenticationSuccessHandler("/") {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-                request.getSession().setAttribute("loggedIn", "true");
+                request.getSession().setAttribute("loggedIn", "Successfully logged in");
                 request.getSession().removeAttribute("loginError");
                 super.onAuthenticationSuccess(request, response, authentication);
             }
