@@ -1,7 +1,13 @@
 package bg.ludogoriesoft.brokerbot.user;
 
-import bg.ludogoriesoft.brokerbot.model.CallResponse;
-import jakarta.persistence.*;
+import bg.ludogoriesoft.brokerbot.model.Call;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,5 +27,5 @@ public class User {
     private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CallResponse> calls;
+    private List<Call> calls;
 }

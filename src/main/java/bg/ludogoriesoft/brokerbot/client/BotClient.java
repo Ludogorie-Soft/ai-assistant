@@ -20,6 +20,9 @@ public interface BotClient {
     @PostMapping("/v1/calls")
     ResponseEntity<CallResponse> makeCall(@RequestBody CallBody callBody);
 
+    @GetMapping("/v1/calls/{id}")
+    ResponseEntity<CallResponse> getCallInfo(@PathVariable("id") String id);
+
     @PostMapping("/v1/calls/{id}/analyze")
     ResponseEntity<AnalyzeResponse> analyzeCall(@PathVariable String id,
                                                 @RequestBody AnalyzeRequest questions);

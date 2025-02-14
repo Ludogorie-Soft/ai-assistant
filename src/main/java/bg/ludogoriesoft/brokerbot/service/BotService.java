@@ -3,8 +3,7 @@ package bg.ludogoriesoft.brokerbot.service;
 import bg.ludogoriesoft.brokerbot.client.BotClient;
 import bg.ludogoriesoft.brokerbot.exception.InvalidPhoneNumberException;
 import bg.ludogoriesoft.brokerbot.exception.UserNotAuthenticatedException;
-import bg.ludogoriesoft.brokerbot.model.AnalyzeRequest;
-import bg.ludogoriesoft.brokerbot.model.AnalyzeResponse;
+import bg.ludogoriesoft.brokerbot.model.Call;
 import bg.ludogoriesoft.brokerbot.model.CallBody;
 import bg.ludogoriesoft.brokerbot.model.CallResponse;
 import bg.ludogoriesoft.brokerbot.model.Request;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class BotService {
     private final BotClient botClient;
     private final CallRepository callRepository;
     private final UserRepository userRepository;
+    private final ASyncService aSyncService;
 
     public ResponseEntity<CallResponse> makeCall(Request request) {
         CallBody callRequestBody = new CallBody();
@@ -48,62 +48,42 @@ public class BotService {
     }
 
     public Map<String, Object> processCall(Request requestDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotAuthenticatedException("User not authenticated!"));
+        User user = getUserOrThrow(email);
 
         ResponseEntity<CallResponse> response = makeCall(requestDto);
 
-        CallResponse callResponse = response.getBody();
-        if (callResponse == null) {
-            throw new RuntimeException("Call response is null!");
-        }
-
-        callRepository.save(CallResponse.builder()
-                .status(callResponse.getStatus())
-                .message(callResponse.getMessage())
-                .call_id(callResponse.getCall_id())
-                .batch_id(callResponse.getBatch_id())
-                .summary(callResponse.getSummary())
-                .user(user)
-                .isVisitConfirmed(callResponse.getCallLength() != 0 ?
-                        getIsVisitConfirmed(callResponse.getCall_id()) : null)
-                .build());
+        aSyncService.waitForCallAndProcess(Objects.requireNonNull(response.getBody()).getCall_id(), user);
 
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("call_id", callResponse.getCall_id());
+        responseBody.put("call_id", response.getBody().getCall_id());
         return responseBody;
     }
 
+    public List<Call> getMyCalls(String email) {
+        return callRepository.findByUser(getUserOrThrow(email));
+    }
+
+    public List<Call> getMySuccessfulCalls(String email){
+        return callRepository.findByUserAndIsVisitConfirmedTrue(getUserOrThrow(email));
+    }
+
+    public List<Call> getMyUnansweredCalls(String email){
+        return callRepository.findUnansweredCallsByUser(getUserOrThrow(email));
+    }
+
+    public List<Call> getMyFailedCalls(String email){
+        return callRepository.findByUserAndNotConfirmed(getUserOrThrow(email));
+    }
+
     private String formatAsBGPhoneNumber(String phoneNumber) {
-        if (phoneNumber.length() != 9) {
+        if (phoneNumber == null || phoneNumber.length() != 9 || !phoneNumber.matches("\\d+")) {
             throw new InvalidPhoneNumberException("Incorrect phone number length");
         }
         return "+359" + phoneNumber;
     }
 
-    private Boolean getIsVisitConfirmed(String callId) {
-        AnalyzeRequest request = AnalyzeRequest.builder()
-                .questions(List.of(List.of("Did the person agree to visit the property?", "boolean")))
-                .build();
-        Boolean result = null;
-        int attempts = 0;
-
-        //This is included because sometimes the bot returns NULL instead of FALSE as result for rejections.
-        while (attempts < 3) {
-            ResponseEntity<AnalyzeResponse> response = botClient.analyzeCall(callId, request);
-            result = response.getBody().getAnswers().getFirst();
-
-            if (result == Boolean.TRUE || result == Boolean.FALSE) {
-                break;
-            }
-            attempts++;
-        }
-
-/*
-       String successfulCallExampleId = "525b301e-2fdb-4cb5-85f3-82bd447da3f8";
-       String unsuccessfulCallExampleId = "bd73b30b-654b-4cb5-b71e-73dc2dff4b2f";
-*/
-        return result;
+    private User getUserOrThrow(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotAuthenticatedException("User not authenticated!"));
     }
-
 }
