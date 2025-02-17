@@ -12,6 +12,7 @@ import java.time.ZoneId;
 public class CallMapper {
     public static Call toCall(CallResponse callResponse) {
         return Call.builder()
+                .callId(callResponse.getCall_id())
                 .summary(cleanSummary(callResponse.getSummary()))
                 .to(callResponse.getTo())
                 .callLength(callResponse.getCall_length())
