@@ -11,9 +11,13 @@ public class CustomRequestInterceptor implements RequestInterceptor {
     @Value("${bot.authorization.token}")
     private String token;
 
+    @Value("${twilio.encrypted.key}")
+    private String twilioKey;
+
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header("Authorization", token);
+        requestTemplate.header("encrypted_key", twilioKey);
         requestTemplate.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
     }
 }
