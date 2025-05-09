@@ -45,6 +45,9 @@ public class ASyncService {
         Call call = CallMapper.toCall(callResponse);
         call.setUser(user);
         call.setIsVisitConfirmed(getIsVisitConfirmed(call.getCallId()));
+        if(callResponse.getPathway_id() != null){
+            call.setPathwaySelected(true);
+        }
         callRepository.save(call);
     }
 

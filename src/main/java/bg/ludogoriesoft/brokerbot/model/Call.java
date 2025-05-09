@@ -51,4 +51,5 @@ public class Call {
     private LocalDate callDate;
     private LocalTime callTime;
 
+    private boolean pathwaySelected;
 }

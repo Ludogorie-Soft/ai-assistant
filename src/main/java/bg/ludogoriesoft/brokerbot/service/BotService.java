@@ -29,16 +29,16 @@ public class BotService {
 
     public ResponseEntity<CallResponse> makeCall(Request request) {
         CallBody callRequestBody = new CallBody();
-        if (!request.getPrompt().isEmpty()) {
-            callRequestBody.setTask(request.getPrompt());
+        if (request.getPathwayId() != null && request.isPathwayCall()) {
+            callRequestBody.setPathway_id(request.getPathwayId());
+        } else if (!request.getPrompt().isEmpty()) {
+            callRequestBody.setTask(request.getPrompt() +
+                    String.format(
+                            "Името на брокера, на когото си асистент е %s. В случай, че те питат за" +
+                                    "имота. Ти предоставям повече информация за него: %s",
+                            request.getAssistantName(),
+                            request.getPropertyInfo()));
         }
-
-        callRequestBody.setTask(callRequestBody.getTask() +
-                String.format(
-                        "Името на брокера, на когото си асистент е %s. В случай, че те питат за" +
-                                "имота. Ти предоставям повече информация за него: %s",
-                        request.getAssistantName(),
-                        request.getPropertyInfo()));
         if (request.getFlexRadio() != null) {
             callRequestBody.setModel(request.getFlexRadio());
         }
@@ -63,15 +63,15 @@ public class BotService {
         return callRepository.findByUser(getUserOrThrow(email));
     }
 
-    public List<Call> getMySuccessfulCalls(String email){
+    public List<Call> getMySuccessfulCalls(String email) {
         return callRepository.findByUserAndIsVisitConfirmedTrue(getUserOrThrow(email));
     }
 
-    public List<Call> getMyUnansweredCalls(String email){
+    public List<Call> getMyUnansweredCalls(String email) {
         return callRepository.findUnansweredCallsByUser(getUserOrThrow(email));
     }
 
-    public List<Call> getMyFailedCalls(String email){
+    public List<Call> getMyFailedCalls(String email) {
         return callRepository.findByUserAndNotConfirmed(getUserOrThrow(email));
     }
 

@@ -36,6 +36,7 @@
                     <th scope="col">ID на обаждане</th>
                     <th scope="col">Номер на клиент</th>
                     <th scope="col">Продължителност</th>
+                    <th scope="col">Метод</th>
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                     <th scope="col">Обобщение</th>
@@ -48,6 +49,7 @@
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${T(java.lang.String).format('%02d:%02d', call.callLength.intValue(), ((call.callLength - call.callLength.intValue()) * 60).intValue())}"></td>
+                        <td th:text="${call.pathwaySelected} ? 'Pathway' : 'Prompt'"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                         <td>
@@ -77,6 +79,7 @@
                     <th scope="col">ID на обаждане</th>
                     <th scope="col">Номер на клиент</th>
                     <th scope="col">Продължителност</th>
+                    <th scope="col">Метод</th>
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                     <th scope="col">Обобщение</th>
@@ -89,6 +92,7 @@
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${T(java.lang.String).format('%02d:%02d', call.callLength.intValue(), ((call.callLength - call.callLength.intValue()) * 60).intValue())}"></td>
+                        <td th:text="${call.pathwaySelected} ? 'Pathway' : 'Prompt'"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                         <td>
@@ -117,6 +121,7 @@
                 <tr>
                     <th scope="col">ID на обаждане</th>
                     <th scope="col">Номер на клиент</th>
+                    <th scope="col">Метод</th>
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                 </tr>
@@ -127,6 +132,7 @@
                         <th scope="row" th:text="${call.callId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
+                        <td th:text="${call.pathwaySelected} ? 'Pathway' : 'Prompt'"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                     </tr>
@@ -140,6 +146,7 @@
                 <tr>
                     <th scope="col">ID на обаждане</th>
                     <th scope="col">Номер на клиент</th>
+                    <th scope="col">Метод</th>
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                 </tr>
@@ -150,6 +157,7 @@
                         <th scope="row" th:text="${call.callId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
+                        <td th:text="${call.pathwaySelected} ? 'Pathway' : 'Prompt'"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                     </tr>

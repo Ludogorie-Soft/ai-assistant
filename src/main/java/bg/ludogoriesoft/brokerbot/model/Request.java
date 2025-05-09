@@ -18,6 +18,8 @@ public class Request {
             "днес им е удобно да направят оглед на имот. В случай, че не им е удобно, ги " +
             "попитай дали ще имат тази възможност в следващите няколко дни. " +
             "Ако ти откажат им кажи, че ще се свържеш пак с тях следващите дни.";
+    private boolean pathwayCall;
+    private String pathwayId;
     private String propertyInfo;
     private String flexRadio;
 

@@ -24,4 +24,6 @@ public class CallResponse {
     @JsonProperty("summary")
     private String summary;
 
+    @JsonProperty("pathway_id")
+    private String pathway_id;
 }
