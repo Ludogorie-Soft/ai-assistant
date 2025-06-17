@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/eleven-labs")
+//@RequestMapping("/eleven-labs")
 public class BotControllerElevenLabs {
 
     private final BotServiceElevenLabs botServiceElevenLabs; //Eleven++
@@ -42,7 +42,7 @@ public class BotControllerElevenLabs {
         return "form-eleven-labs";
     }
 
-    @PostMapping("/call")
+    @PostMapping("/eleven-labs/call")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> makeCall(@ModelAttribute RequestElevenLabs requestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
