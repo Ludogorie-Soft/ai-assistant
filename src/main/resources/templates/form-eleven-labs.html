@@ -1,0 +1,479 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Направи обаждане</title>
+
+  <style>
+    #spinner {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip-container .tooltip-text {
+        visibility: hidden;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 5px 10px;
+        border-radius: 5px;
+        position: absolute;
+        bottom: 125%; /* Позициониране над бутона */
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Custom CSS spinner */
+    .spinner-custom {
+        border: 8px solid #f3f3f3;
+        /* Light grey */
+        border-top: 8px solid #3498db;
+        /* Blue */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .pathway-id {
+        flex: 1;
+    }
+
+  </style>
+</head>
+
+<body>
+<h2 class="text-center mb-4 main-header">Eleven Labs</h2>
+<div id="loginSuccessMessage" class="alert alert-success text-center"
+     style="display: none; font-size: 1.5rem; padding: 15px; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 50%; z-index: 1050;">
+  Успешно вписване!
+</div>
+<div class="container mt-4">
+  <h2 class="text-center mb-4 main-header">Направи обаждане</h2>
+  <!-- Login/Sign-Up Buttons -->
+  <div class="text-center mb-4" sec:authorize="isAnonymous()">
+    <button class="btn btn-light" data-toggle="modal" data-target="#loginModal">Вход</button>
+    <button class="btn btn-dark" data-toggle="modal" data-target="#registerModal">Регистрация</button>
+  </div>
+  <div class="text-center mb-4" sec:authorize="isAuthenticated()">
+    <p th:text="'Добре дошъл, ' + ${#authentication.principal.email}"></p>
+    <div class="d-flex justify-content-center">
+      <form th:action="@{/history}" method="GET" class="mr-2">
+        <button type="submit" class="btn btn-dark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-clock" viewBox="0 0 16 16">
+            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+          </svg>
+          История на обажданията
+        </button>
+      </form>
+      <form th:action="@{/logout}" method="POST" class="ml-2">
+        <button type="submit" class="btn btn-danger">Изход</button>
+      </form>
+    </div>
+  </div>
+
+  <form id="callForm" th:action="@{eleven-labs/call}" method="POST" th:object="${request_eleven_labs}">
+    <!-- Call Form Content -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="phoneNumber" class="form-label">Телефонен номер</label>
+        <div class="input-group">
+          <span class="input-group-text">+359</span>
+          <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control"
+                 th:field="*{phoneNumber}" required pattern="[0-9]{9}" maxlength="9"
+                 title="Телефонният номер трябва да съдържа точно 9 цифри."
+                 oninput="validatePhoneNumber()" onkeypress="return isNumberKey(event)">
+          <div class="invalid-feedback">
+            Телефонният номер трябва да съдържа точно 9 цифри.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="assistantName" class="form-label">Име на брокер</label>
+        <input th:field="*{assistantName}" type="text" id="assistantName" name="assistantName"
+               class="form-control" min="0" required>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="firstMessage" class="form-label">Първо съобщение</label>
+      <textarea th:field="*{firstMessage}" id="firstMessage" name="firstMessage" class="form-control" rows="3"
+                required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="prompt" class="form-label">Инструкции за асистента</label>
+      <textarea th:field="*{prompt}" id="prompt" name="prompt" class="form-control" rows="6"
+                required></textarea>
+    </div>
+
+<!--    <div class="mb-3">-->
+<!--      <label for="propertyInfo" class="form-label">Информация за имота</label>-->
+<!--      <textarea th:field="*{propertyInfo}" id="propertyInfo" name="propertyInfo" class="form-control" rows="6"-->
+<!--                required></textarea>-->
+<!--    </div>-->
+
+    <div class="d-flex justify-content-center">
+      <div class="tooltip-container">
+        <button class="btn btn-lg btn-success"
+                type="submit"
+                th:classappend="${#authorization.expression('isAnonymous()')} ? 'btn-secondary disabled' : ''"
+                th:disabled="${#authorization.expression('isAnonymous()')}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
+            <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z"/>
+          </svg>
+          НАПРАВИ ОБАЖДАНЕ
+        </button>
+        <span class="tooltip-text" th:if="${#authorization.expression('isAnonymous()')}">
+                            Трябва да се впишете в системата, за да направите обаждане
+                        </span>
+      </div>
+    </div>
+  </form>
+
+  <!-- Custom Spinner -->
+  <div id="spinner" class="spinner-container">
+    <div class="spinner-custom"></div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Успешно създадена заявка</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="successMessage">
+          <!-- Success message will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="successRegModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+       aria-hidden="true" th:if="${successReg}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successRegModalLabel">Успех</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" th:text="${successReg}">
+          Успешно направена регистрация!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Възникна грешка при обработване на заявката!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="errorMessage">
+          <!-- Success message will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div th:if="${loginError}" class="alert alert-danger">
+          <p th:text="${loginError}"></p>
+        </div>
+        <div th:if="${historyAccessDenied}" class="alert alert-danger">
+          <p th:text="${historyAccessDenied}"></p>
+        </div>
+        <div class="modal-body">
+          <form th:action="@{/login}" method="POST" th:object="${user}">
+            <div class="form-group">
+              <label for="loginEmail">Имейл</label>
+              <input th:field="*{email}" type="email" class="form-control" id="loginEmail"
+                     name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Парола</label>
+              <input th:field="*{password}" type="password" class="form-control" id="loginPassword"
+                     name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Вход</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div th:if="${nonMatchingPw}" class="alert alert-danger text-center" role="alert">
+          <span th:text="${nonMatchingPw}"></span>
+        </div>
+        <div th:if="${existingEmail}" class="alert alert-danger text-center" role="alert">
+          <span th:text="${existingEmail}"></span>
+        </div>
+        <div class="modal-body">
+          <form th:action="@{/register}" method="POST" th:object="${registerUser}">
+            <div class="form-group">
+              <label for="registerEmail">Имейл</label>
+              <input th:field="*{email}" type="email" class="form-control" id="registerEmail"
+                     name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Парола</label>
+              <input th:field="*{password}" type="password" class="form-control" id="registerPassword"
+                     name="password" required>
+            </div>
+            <div class="form-group">
+              <label for="registerConfirmPassword">Потвърдете Парола</label>
+              <input th:field="*{confirmPassword}" type="password" class="form-control"
+                     id="registerConfirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Регистрация</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery, Popper, Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+
+<script>
+  const promptTextarea = document.getElementById('prompt');
+  const firstMessageTextarea = document.getElementById('firstMessage');
+  const propertyInfoTextarea = document.getElementById('propertyInfo');
+
+  checkbox.addEventListener('change', function () {
+      if (this.checked) {
+          firstMessageTextarea.disable = true
+          promptTextarea.disabled = true;
+          propertyInfoTextarea.disabled = true;
+      } else {
+          firstMessageTextarea.disable = false
+          promptTextarea.disabled = false;
+          propertyInfoTextarea.disabled = false;
+      }
+  });
+</script>
+<script>
+  $(document).ready(function () {
+      // Capture form submission
+      $('#callForm').on('submit', function (e) {
+          e.preventDefault();  // Prevent the default form submission
+
+          // Show spinner
+          $('#spinner').show();
+
+          // Submit the form via AJAX
+          $.ajax({
+              url: $(this).attr('action'),  // Get the form's action attribute (the URL to submit to)
+              type: 'POST',
+              data: $(this).serialize(),  // Serialize form data
+              dataType: 'json',  // Expect a JSON response
+              success: function (response) {
+                  // Set message and show modal
+                  $('#successMessage').text('Успешно създадена заявка за обаждане с номер: ' + response.call_id);
+                  $('#successModal').modal('show');
+              },
+              error: function (xhr, status, error) {
+                  // Handle error response
+                  $('#errorMessage').text('Заявката не може да бъде изпълнена! ');
+                  $('#errorModal').modal('show');
+              },
+              complete: function () {
+                  // Hide spinner after the request completes (whether successful or failed)
+                  $('#spinner').hide();
+              }
+          });
+      });
+  });
+</script>
+<script>
+  // Disable the button if the user is not authenticated
+  document.addEventListener("DOMContentLoaded", function () {
+      let callButton = document.querySelector("#callForm button[type='submit']");
+      if (callButton) {
+          let isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+          if (!isAuthenticated) {
+              callButton.disabled = true;
+          }
+      }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let showLoginModal = [[${showLoginModal}]];
+      if (showLoginModal) {
+          $('#loginModal').modal('show');
+      }
+  });
+</script>
+<script>
+  function isNumberKey(evt) {
+      let charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57) {
+          return false;
+      }
+      return true;
+  }
+
+  function validatePhoneNumber() {
+      let phoneInput = document.getElementById("phoneNumber");
+      let callButton = document.getElementById("callButton");
+
+      if (phoneInput.value.length === 9) {
+          phoneInput.classList.remove("is-invalid");
+          callButton.disabled = false;
+          callButton.classList.remove("btn-secondary");
+          callButton.classList.add("btn-primary");
+      } else {
+          phoneInput.classList.add("is-invalid");
+          callButton.disabled = true;
+          callButton.classList.remove("btn-primary");
+          callButton.classList.add("btn-secondary");
+      }
+  }
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let successMessage = "[[${successReg}]]";
+      if (successMessage) {
+          let modal = new bootstrap.Modal(document.getElementById('successRegModal'));
+          modal.show();
+
+          setTimeout(() => {
+              modal.hide();
+          }, 3000);
+      }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let loginError = "[[${loginError}]]";
+      if (loginError && loginError !== "null") {
+          $('#loginModal').modal('show');
+      }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let historyAccessDenied = "[[${historyAccessDenied}]]";
+      if (historyAccessDenied && historyAccessDenied !== "null") {
+          $('#loginModal').modal('show');
+      }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let errorMessage = "[[${nonMatchingPw}]]";
+      if (errorMessage && errorMessage !== "null") {
+          $('#registerModal').modal('show');
+      }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let errorMessage = "[[${existingEmail}]]";
+      if (errorMessage && errorMessage !== "null") {
+          $('#registerModal').modal('show');
+      }
+  });
+</script>
+<script>
+  setTimeout(() => {
+      document.querySelector('.alert')?.remove();
+  }, 3000);
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let loginSuccess = "[[${loggedIn}]]";
+      if (loginSuccess === "true") {
+          let messageBox = document.getElementById("loginSuccessMessage");
+          messageBox.style.display = "block";
+
+      setTimeout(() => {
+              messageBox.style.display = "none";
+          }, 3000);
+      }
+  });
+</script>
+</body>
+
+</html>
