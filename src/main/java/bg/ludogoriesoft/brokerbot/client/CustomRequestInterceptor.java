@@ -1,12 +1,11 @@
 package bg.ludogoriesoft.brokerbot.client;
 
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
 
-@Configuration
-public class CustomRequestInterceptor implements RequestInterceptor {
+//@Configuration
+public class CustomRequestInterceptor{
 
     @Value("${bot.authorization.token}")
     private String token;
@@ -14,10 +13,21 @@ public class CustomRequestInterceptor implements RequestInterceptor {
     @Value("${twilio.encrypted.key}")
     private String twilioKey;
 
-    @Override
-    public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header("Authorization", token);
-        requestTemplate.header("encrypted_key", twilioKey);
-        requestTemplate.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+//    @Override
+//    public void apply(RequestTemplate requestTemplate) {
+//        requestTemplate.header("Authorization", token);
+//        requestTemplate.header("encrypted_key", twilioKey);
+//        requestTemplate.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+//    }
+
+    @Bean
+    public RequestInterceptor requestInterceptor() {
+
+        return requestTemplate ->  {
+            requestTemplate.header("Authorization", token);
+            requestTemplate.header("encrypted_key", twilioKey);
+            requestTemplate.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+
+        };
     }
 }
