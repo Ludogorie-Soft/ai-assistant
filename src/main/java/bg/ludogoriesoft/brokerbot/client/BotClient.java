@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Component
 @FeignClient(name = "bot-client", url = "https://api.bland.ai",
         configuration = CustomRequestInterceptor.class)
 public interface BotClient {
