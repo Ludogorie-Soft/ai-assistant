@@ -33,8 +33,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/register", "/login", "/history").permitAll()
-                        .requestMatchers("/**").authenticated()
+                        .requestMatchers("/","/register", "/login", "/history", "/bland").permitAll()
+                        .requestMatchers("/**", "/eleven-labs/call").authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -53,6 +53,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
