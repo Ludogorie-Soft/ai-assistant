@@ -28,7 +28,7 @@ public class BotServiceElevenLabs {
         CallBodyElevenLabs callBodyElevenLabs = new CallBodyElevenLabs();
 
         callBodyElevenLabs.setTo_number(formatAsBGPhoneNumber(requestElevenLabs.getPhoneNumber()));
-        //Get Prompt
+        //Get Prompt  and first message
         callBodyElevenLabs.setConversation_initiation_client_data(
                 new ConversationInitiationClientData(
                         new ConversationConfigOverride(
