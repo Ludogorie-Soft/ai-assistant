@@ -28,7 +28,7 @@ public class BotController {
 
     private final BotService botService;
 
-    @GetMapping
+    @GetMapping("/bland")
     public String getForm(Model model, HttpSession session, RedirectAttributes redirectAttributes,  @RequestParam(required = false) String clearSuccessLog) {
         String loginError = (String) session.getAttribute("loginError");
         if (loginError != null) {
