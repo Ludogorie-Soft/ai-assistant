@@ -49,9 +49,24 @@ public class BotControllerElevenLabs {
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
             throw new UserNotAuthenticatedException("User not authenticated!");
         }
-        Map<String, Object> responseBody = botServiceElevenLabs.processCall(requestDto);
+        Map<String, Object> responseBody = botServiceElevenLabs.processCall(requestDto, userDetails.getUsername());
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/eleven-labs/history")
+    public String getCallHistory(Model model, RedirectAttributes redirectAttributes) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+            redirectAttributes.addFlashAttribute("userNotLoggedIn", true);
+            return "redirect:/";
+        }
+        String userName = userDetails.getUsername();
+        model.addAttribute("allCallsElevenLabs", botServiceElevenLabs.getMyCalls(userName));
+        model.addAttribute("successfulCallsElevenLabs", botServiceElevenLabs.getMySuccessfulCalls(userName));
+        model.addAttribute("unansweredCallsElevenLabs", botServiceElevenLabs.getMyUnansweredCalls(userName));
+        model.addAttribute("unsuccessfulCallsElevenLabs", botServiceElevenLabs.getMyUnsuccessfulCalls(userName));
+        return "call-history-eleven-labs";
     }
 
 }
