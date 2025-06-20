@@ -62,7 +62,7 @@ public class BotController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
             redirectAttributes.addFlashAttribute("userNotLoggedIn", true);
-            return "redirect:/";
+            return "redirect:/bland";
         }
         String userName = userDetails.getUsername();
         model.addAttribute("allCalls", botService.getMyCalls(userName));
