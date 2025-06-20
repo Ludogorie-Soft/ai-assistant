@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>История на обажданията</title>
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">История на обажданията</h2>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">Успешни
+            </button>
+            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Неуспешни
+            </button>
+            <button class="nav-link" id="nav-unopened-tab" data-toggle="tab" href="#nav-unopened"
+                    type="button" role="tab" aria-controls="nav-unopened" aria-selected="false">Неотговорени
+            </button>
+            <button class="nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
+                    type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Всички
+            </button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID на обаждане</th>
+                    <th scope="col">Номер на клиент</th>
+                    <th scope="col">Продължителност</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Час</th>
+                    <th scope="col">Обобщение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="call : ${successfulCallsElevenLabs}">
+                    <tr>
+                        <th scope="row" th:text="${call.conversation_id}"
+                            style="white-space: normal; word-break: break-all;"></th>
+                        <td th:text="${call.to}"></td>
+                        <td th:text="${call.call_duration_secs}"></td>
+                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td>
+                            <button class="btn btn-secondary" data-toggle="collapse"
+                                    th:data-target="'#success-info' + ${call.conversation_id}">
+                                Детайли
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" th:id="'success-info' + ${call.conversation_id}">
+                        <td colspan="6" class="bg-light">
+                                <span th:if="${call.summary != null and call.summary != ''}"
+                                      th:text="'Обобщение: ' + ${call.summary}"></span>
+                            <span th:unless="${call.summary != null and call.summary != ''}">
+                                    <i>Няма обобщение на разговора</i>
+                                </span>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID на обаждане</th>
+                    <th scope="col">Номер на клиент</th>
+                    <th scope="col">Продължителност</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Час</th>
+                    <th scope="col">Обобщение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="call : ${unsuccessfulCallsElevenLabs}">
+                    <tr>
+                        <th scope="row" th:text="${call.conversation_id}"
+                            style="white-space: normal; word-break: break-all;"></th>
+                        <td th:text="${call.to}"></td>
+                        <td th:text="${call.call_duration_secs}"></td>
+                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td>
+                            <button class="btn btn-secondary" data-toggle="collapse"
+                                    th:data-target="'#failed-info' + ${call.conversation_id}">
+                                Детайли
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" th:id="'failed-info' + ${call.conversation_id}">
+                        <td colspan="6" class="bg-light">
+                                <span th:if="${call.summary != null and call.summary != ''}"
+                                      th:text="'Обобщение: ' + ${call.summary}"></span>
+                            <span th:unless="${call.summary != null and call.summary != ''}">
+                                    <i>Няма обобщение на разговора</i>
+                                </span>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="nav-unopened" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID на обаждане</th>
+                    <th scope="col">Номер на клиент</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Час</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="call : ${unansweredCallsElevenLabs}">
+                    <tr>
+                        <th scope="row" th:text="${call.conversation_id}"
+                            style="white-space: normal; word-break: break-all;"></th>
+                        <td th:text="${call.to}"></td>
+                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID на обаждане</th>
+                    <th scope="col">Номер на клиент</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Час</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="call : ${allCallsElevenLabs}">
+                    <tr th:classappend="${call.isVisitConfirmed == null ? 'table-secondary' : (call.isVisitConfirmed ? 'table-success' : 'table-danger')}">
+                        <th scope="row" th:text="${call.conversation_id}"
+                            style="white-space: normal; word-break: break-all;"></th>
+                        <td th:text="${call.to}"></td>
+                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function refreshTable() {
+        $.ajax({
+            url: window.location.href,
+            type: 'GET',
+            cache: false,
+            success: function(data) {
+                var $response = $(data);
+                $('#nav-home table').html($response.find('#nav-home table').html());
+                $('#nav-profile table').html($response.find('#nav-profile table').html());
+                $('#nav-unopened table').html($response.find('#nav-unopened table').html());
+                $('#nav-contact table').html($response.find('#nav-contact table').html());
+                $('[data-toggle="collapse"]').collapse();
+            },
+            error: function() {
+                console.error('Грешка при обновяване на данните');
+            }
+        });
+    }
+    setInterval(refreshTable, 60000);
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
