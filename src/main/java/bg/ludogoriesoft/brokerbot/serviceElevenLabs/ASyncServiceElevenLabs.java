@@ -45,7 +45,9 @@ public class ASyncServiceElevenLabs {
     private void saveCall(CallDataResponseElevenLabs callResponseElevenLabs, User user) {
         CallElevenLabs callElevenLabs = CallElevenLabsMapper.toCall(callResponseElevenLabs);
         callElevenLabs.setUser(user);
-        callElevenLabs.setIsVisitConfirmed(callResponseElevenLabs.getAnalysis().getDataCollectionResults().getIsVisitConfirmed().getIsVisitConfirmed());
+        if(callResponseElevenLabs.getAnalysis() != null){
+            callElevenLabs.setIsVisitConfirmed(callResponseElevenLabs.getAnalysis().getDataCollectionResults().getIsVisitConfirmed().getIsVisitConfirmed());
+        }
 
         callRepositoryElevenLabs.save(callElevenLabs);
     }

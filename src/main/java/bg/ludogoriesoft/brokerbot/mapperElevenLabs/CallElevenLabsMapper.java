@@ -10,12 +10,19 @@ public class CallElevenLabsMapper {
     public static CallElevenLabs toCall(CallDataResponseElevenLabs callDataResponseElevenLabs) {
         return CallElevenLabs.builder()
                 .conversation_id(callDataResponseElevenLabs.getConversation_id())
-                .summary(callDataResponseElevenLabs.getAnalysis().getTranscriptSummary())
+                .summary(getSummary(callDataResponseElevenLabs))
                 .to(callDataResponseElevenLabs.getMetadata().getPhoneCall().getExternalNumber())
                 .call_duration_secs(callDataResponseElevenLabs.getMetadata().getCallDurationSecs())
                 .callDate(getCallDate(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
                 .callTime(getCallTime(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
                 .build();
+    }
+
+    private static String getSummary(CallDataResponseElevenLabs callDataResponseElevenLabs){
+        if(callDataResponseElevenLabs.getAnalysis() != null){
+            return callDataResponseElevenLabs.getAnalysis().getTranscriptSummary();
+        }
+        return null;
     }
 
     private static LocalDate getCallDate(Instant callDateTime) {
