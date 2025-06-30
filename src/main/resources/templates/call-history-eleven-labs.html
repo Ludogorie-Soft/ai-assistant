@@ -26,6 +26,9 @@
             <button class="nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
                     type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Всички
             </button>
+            <button class="nav-link" id="nav-contact-inbound-tab" data-toggle="tab" href="#nav-contact-inbound"
+                    type="button" role="tab" aria-controls="nav-contact-inbound" aria-selected="false">Вх. обаждания
+            </button>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -44,7 +47,7 @@
                 <tbody>
                 <th:block th:each="call : ${successfulCallsElevenLabs}">
                     <tr>
-                        <th scope="row" th:text="${call.conversation_id}"
+                        <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${call.call_duration_secs}"></td>
@@ -52,12 +55,12 @@
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                         <td>
                             <button class="btn btn-secondary" data-toggle="collapse"
-                                    th:data-target="'#success-info' + ${call.conversation_id}">
+                                    th:data-target="'#success-info' + ${call.convId}">
                                 Детайли
                             </button>
                         </td>
                     </tr>
-                    <tr class="collapse" th:id="'success-info' + ${call.conversation_id}">
+                    <tr class="collapse" th:id="'success-info' + ${call.convId}">
                         <td colspan="6" class="bg-light">
                                 <span th:if="${call.summary != null and call.summary != ''}"
                                       th:text="'Обобщение: ' + ${call.summary}"></span>
@@ -85,7 +88,7 @@
                 <tbody>
                 <th:block th:each="call : ${unsuccessfulCallsElevenLabs}">
                     <tr>
-                        <th scope="row" th:text="${call.conversation_id}"
+                        <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${call.call_duration_secs}"></td>
@@ -93,12 +96,12 @@
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                         <td>
                             <button class="btn btn-secondary" data-toggle="collapse"
-                                    th:data-target="'#failed-info' + ${call.conversation_id}">
+                                    th:data-target="'#failed-info' + ${call.convId}">
                                 Детайли
                             </button>
                         </td>
                     </tr>
-                    <tr class="collapse" th:id="'failed-info' + ${call.conversation_id}">
+                    <tr class="collapse" th:id="'failed-info' + ${call.convId}">
                         <td colspan="6" class="bg-light">
                                 <span th:if="${call.summary != null and call.summary != ''}"
                                       th:text="'Обобщение: ' + ${call.summary}"></span>
@@ -124,7 +127,7 @@
                 <tbody>
                 <th:block th:each="call : ${unansweredCallsElevenLabs}">
                     <tr>
-                        <th scope="row" th:text="${call.conversation_id}"
+                        <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
@@ -147,11 +150,50 @@
                 <tbody>
                 <th:block th:each="call : ${allCallsElevenLabs}">
                     <tr th:classappend="${call.isVisitConfirmed == null ? 'table-secondary' : (call.isVisitConfirmed ? 'table-success' : 'table-danger')}">
-                        <th scope="row" th:text="${call.conversation_id}"
+                        <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="nav-contact-inbound" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID на обаждане</th>
+                    <th scope="col">Номер на клиент</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Час</th>
+                    <th scope="col">Обобщение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="call : ${inboundCallsElevenLabs}">
+                    <tr th:classappend="${call.isVisitConfirmed == null ? 'table-secondary' : (call.isVisitConfirmed ? 'table-success' : 'table-danger')}">
+                        <th scope="row" th:text="${call.convId}"
+                            style="white-space: normal; word-break: break-all;"></th>
+                        <td th:text="${call.to}"></td>
+                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td>
+                            <button class="btn btn-secondary" data-toggle="collapse"
+                                    th:data-target="'#failed-info' + ${call.convId}">
+                                Детайли
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" th:id="'failed-info' + ${call.convId}">
+                        <td colspan="6" class="bg-light">
+                                <span th:if="${call.summary != null and call.summary != ''}"
+                                      th:text="'Обобщение: ' + ${call.summary}"></span>
+                            <span th:unless="${call.summary != null and call.summary != ''}">
+                                    <i>Няма обобщение на разговора</i>
+                                </span>
+                        </td>
                     </tr>
                 </th:block>
                 </tbody>
