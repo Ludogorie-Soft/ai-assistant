@@ -9,9 +9,10 @@ public class CallElevenLabsMapper {
 
     public static CallElevenLabs toCall(CallDataResponseElevenLabs callDataResponseElevenLabs) {
         return CallElevenLabs.builder()
-                .conversation_id(callDataResponseElevenLabs.getConversation_id())
+                .convId(callDataResponseElevenLabs.getConversation_id())
                 .summary(getSummary(callDataResponseElevenLabs))
                 .to(callDataResponseElevenLabs.getMetadata().getPhoneCall().getExternalNumber())
+                .type(callDataResponseElevenLabs.getMetadata().getPhoneCall().getDirection())
                 .call_duration_secs(callDataResponseElevenLabs.getMetadata().getCallDurationSecs())
                 .callDate(getCallDate(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
                 .callTime(getCallTime(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
