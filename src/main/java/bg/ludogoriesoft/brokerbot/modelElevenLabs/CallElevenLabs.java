@@ -26,9 +26,11 @@ public class CallElevenLabs {
     @ManyToOne
     private User user;
 
-    private String conversation_id;
+    private String convId;
 
     private Boolean isVisitConfirmed;
+
+    private String type;
 
     @Column(columnDefinition = "TEXT")
     private String summary;
