@@ -79,4 +79,8 @@ public class BotServiceElevenLabs {
         return callRepositoryElevenLabs.findByUserAndNotConfirmed(getUserOrThrow(email));
     }
 
+    public List<CallElevenLabs> getInboundCalls(){
+        return callRepositoryElevenLabs.findInboundCalls();
+    }
+
 }

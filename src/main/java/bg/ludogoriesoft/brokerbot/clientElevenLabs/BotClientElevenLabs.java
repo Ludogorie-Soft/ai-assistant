@@ -1,5 +1,6 @@
 package bg.ludogoriesoft.brokerbot.clientElevenLabs;
 
+import bg.ludogoriesoft.brokerbot.modelElevenLabs.Conversations;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.CallBodyElevenLabs;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.CallDataResponseElevenLabs;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.CallResponseElevenLabs;
@@ -20,4 +21,7 @@ public interface BotClientElevenLabs {
 
     @GetMapping("/v1/convai/conversations/{conv_id}")
     ResponseEntity<CallDataResponseElevenLabs> getCallInfo(@PathVariable("conv_id") String id);
+
+    @GetMapping("/v1/convai/conversations")
+    ResponseEntity<Conversations> getAllCallsInfo();
 }

@@ -66,6 +66,7 @@ public class BotControllerElevenLabs {
         model.addAttribute("successfulCallsElevenLabs", botServiceElevenLabs.getMySuccessfulCalls(userName));
         model.addAttribute("unansweredCallsElevenLabs", botServiceElevenLabs.getMyUnansweredCalls(userName));
         model.addAttribute("unsuccessfulCallsElevenLabs", botServiceElevenLabs.getMyUnsuccessfulCalls(userName));
+        model.addAttribute("inboundCallsElevenLabs", botServiceElevenLabs.getInboundCalls());
         return "call-history-eleven-labs";
     }
 
