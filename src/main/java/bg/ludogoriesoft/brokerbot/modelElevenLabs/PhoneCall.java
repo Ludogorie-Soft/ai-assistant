@@ -10,4 +10,7 @@ public class PhoneCall {
 
     @JsonProperty("external_number")
     private String externalNumber;
+
+    @JsonProperty("direction")
+    private String direction;
 }
