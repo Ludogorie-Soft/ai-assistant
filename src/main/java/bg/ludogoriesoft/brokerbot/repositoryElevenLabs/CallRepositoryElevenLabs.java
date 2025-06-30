@@ -17,4 +17,10 @@ public interface CallRepositoryElevenLabs extends JpaRepository<CallElevenLabs, 
 
     @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.isVisitConfirmed IS NULL")
     List<CallElevenLabs> findUnansweredCallsByUser(@Param("user") User user);
+
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.type = 'inbound'")
+    List<CallElevenLabs> findInboundCalls();
+
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.convId = :conv_id")
+    CallElevenLabs findConversationsByConvId(@Param("conv_id") String conv_id);
 }
