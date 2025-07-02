@@ -122,6 +122,8 @@
                     <th scope="col">Номер на клиент</th>
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
+                    <th scope="col">Вид обаждане</th>
+                    <th scope="col">История</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -132,6 +134,13 @@
                         <td th:text="${call.to}"></td>
                         <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${{call.type == 'outbound'} ? 'Изх. обаждане' : 'Вх. обаждане'}"></td>
+                        <td>
+                            <form action="#" th:action="@{/eleven-labs/num-history(number=${call.to})}" method="get" style="display:inline;">
+                                <input type="hidden" name="phNumber" th:value="${call.to}">
+                                <button class="btn btn-warning" type="submit">История</button>
+                            </form>
+                        </td>
                     </tr>
                 </th:block>
                 </tbody>
@@ -181,12 +190,12 @@
                         <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
                         <td>
                             <button class="btn btn-secondary" data-toggle="collapse"
-                                    th:data-target="'#failed-info' + ${call.convId}">
+                                    th:data-target="'#inbound-info' + ${call.convId}">
                                 Детайли
                             </button>
                         </td>
                     </tr>
-                    <tr class="collapse" th:id="'failed-info' + ${call.convId}">
+                    <tr class="collapse" th:id="'inbound-info' + ${call.convId}">
                         <td colspan="6" class="bg-light">
                                 <span th:if="${call.summary != null and call.summary != ''}"
                                       th:text="'Обобщение: ' + ${call.summary}"></span>
@@ -213,6 +222,7 @@
                 $('#nav-profile table').html($response.find('#nav-profile table').html());
                 $('#nav-unopened table').html($response.find('#nav-unopened table').html());
                 $('#nav-contact table').html($response.find('#nav-contact table').html());
+                $('#nav-contact-inbound').html($response.find('#nav-contact-inbound').html());
                 $('[data-toggle="collapse"]').collapse();
             },
             error: function() {
