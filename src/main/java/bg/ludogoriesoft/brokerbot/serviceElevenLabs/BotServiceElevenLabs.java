@@ -13,10 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +70,11 @@ public class BotServiceElevenLabs {
     }
 
     public List<CallElevenLabs> getMyUnansweredCalls(String email) {
+        List<CallElevenLabs> lastUnansweredCalls = new ArrayList<>();
+        List<CallElevenLabs> allUnasweredCalls = callRepositoryElevenLabs.findUnansweredCallsByUser(getUserOrThrow(email));
+        for(CallElevenLabs calls : allUnasweredCalls){
+            lastUnansweredCalls.addAll(getConversationHistoryByNumber(calls.getTo()));
+        }
         return callRepositoryElevenLabs.findUnansweredCallsByUser(getUserOrThrow(email));
     }
 
@@ -81,6 +84,16 @@ public class BotServiceElevenLabs {
 
     public List<CallElevenLabs> getInboundCalls(){
         return callRepositoryElevenLabs.findInboundCalls();
+    }
+
+    public List<CallElevenLabs> getConversationHistoryByNumber(String number){
+        CallElevenLabs lastAnsweredCall = getLastTimeWhenNumberIsAnswer(number);
+        //callRepositoryElevenLabs.findUnansweredCallsByNumber(number, lastAnsweredCall.getCallDate(), lastAnsweredCall.getCallTime());
+        return callRepositoryElevenLabs.findUnansweredCallsByNumber(number, LocalDateTime.of(lastAnsweredCall.getCallDate(), lastAnsweredCall.getCallTime()));
+    }
+
+    public CallElevenLabs getLastTimeWhenNumberIsAnswer(String number){
+        return callRepositoryElevenLabs.findLastAnsweredCallByNumber(number).getLast();
     }
 
 }
