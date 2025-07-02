@@ -1,6 +1,7 @@
 package bg.ludogoriesoft.brokerbot.controllerElevenLabs;
 
 import bg.ludogoriesoft.brokerbot.exception.UserNotAuthenticatedException;
+import bg.ludogoriesoft.brokerbot.modelElevenLabs.CallElevenLabs;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.RequestElevenLabs;
 import bg.ludogoriesoft.brokerbot.serviceElevenLabs.BotServiceElevenLabs;
 import bg.ludogoriesoft.brokerbot.user.User;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -68,6 +70,12 @@ public class BotControllerElevenLabs {
         model.addAttribute("unsuccessfulCallsElevenLabs", botServiceElevenLabs.getMyUnsuccessfulCalls(userName));
         model.addAttribute("inboundCallsElevenLabs", botServiceElevenLabs.getInboundCalls());
         return "call-history-eleven-labs";
+    }
+
+    @GetMapping("/eleven-labs/num-history")
+    public String getCallHistoryByUnansweredNumber(Model model, @RequestParam("phNumber") String number) {
+        model.addAttribute("numberHistory", botServiceElevenLabs.getConversationHistoryByNumber(number));
+        return "number-history";
     }
 
 }
