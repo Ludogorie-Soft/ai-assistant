@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>История на обажданията</title>
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">История на обажданията</h2>
+    <div class="tab-content" id="nav-tabContent">
+        <div id="nav-unopened" aria-labelledby="nav-contact-tab">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID на обаждане</th>
+                    <th scope="col">Номер на клиент</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Час</th>
+                    <th scope="col">Вид обаждане</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="call : ${numberHistory}">
+                    <tr>
+                        <th scope="row" th:text="${call.convId}"
+                            style="white-space: normal; word-break: break-all;"></th>
+                        <td th:text="${call.to}"></td>
+                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${{call.type == 'outbound'} ? 'Изх. обаждане' : 'Вх. обаждане'}"></td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
