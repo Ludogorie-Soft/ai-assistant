@@ -10,13 +10,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CallRepositoryElevenLabs extends JpaRepository<CallElevenLabs, Long> {
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user ORDER BY c.callDateTime DESC")
     List<CallElevenLabs> findByUser(User user);
+
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.isVisitConfirmed = true ORDER BY c.callDateTime DESC")
     List<CallElevenLabs> findByUserAndIsVisitConfirmedTrue(User user);
 
-    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.isVisitConfirmed = false")
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.isVisitConfirmed = false ORDER BY c.callDateTime DESC")
     List<CallElevenLabs> findByUserAndNotConfirmed(@Param("user") User user);
 
-    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.isVisitConfirmed IS NULL")
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.isVisitConfirmed IS NULL ORDER BY c.callDateTime DESC")
     List<CallElevenLabs> findUnansweredCallsByUser(@Param("user") User user);
 
     @Query("SELECT c FROM CallElevenLabs c WHERE c.type = 'inbound' ORDER BY c.callDateTime DESC")
