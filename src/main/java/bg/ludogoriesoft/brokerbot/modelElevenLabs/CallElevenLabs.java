@@ -4,8 +4,7 @@ import bg.ludogoriesoft.brokerbot.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -39,6 +38,6 @@ public class CallElevenLabs {
     private String to;
 
     private double call_duration_secs;
-    private LocalDate callDate;
-    private LocalTime callTime;
+
+    private LocalDateTime callDateTime;
 }
