@@ -3,17 +3,14 @@ package bg.ludogoriesoft.brokerbot.serviceElevenLabs;
 import bg.ludogoriesoft.brokerbot.clientElevenLabs.BotClientElevenLabs;
 import bg.ludogoriesoft.brokerbot.exception.InvalidPhoneNumberException;
 import bg.ludogoriesoft.brokerbot.exception.UserNotAuthenticatedException;
-import bg.ludogoriesoft.brokerbot.model.Call;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.*;
 import bg.ludogoriesoft.brokerbot.repository.UserRepository;
 import bg.ludogoriesoft.brokerbot.repositoryElevenLabs.CallRepositoryElevenLabs;
-import bg.ludogoriesoft.brokerbot.service.ASyncService;
 import bg.ludogoriesoft.brokerbot.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
