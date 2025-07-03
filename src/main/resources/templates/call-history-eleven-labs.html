@@ -42,6 +42,7 @@
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                     <th scope="col">Обобщение</th>
+                    <th scope="col">История</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -51,13 +52,19 @@
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${call.call_duration_secs}"></td>
-                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                         <td>
                             <button class="btn btn-secondary" data-toggle="collapse"
                                     th:data-target="'#success-info' + ${call.convId}">
                                 Детайли
                             </button>
+                        </td>
+                        <td>
+                            <form action="#" th:action="@{/eleven-labs/num-history(number=${call.to})}" method="get" style="display:inline;">
+                                <input type="hidden" name="phNumber" th:value="${call.to}">
+                                <button class="btn btn-warning" type="submit">История</button>
+                            </form>
                         </td>
                     </tr>
                     <tr class="collapse" th:id="'success-info' + ${call.convId}">
@@ -83,6 +90,7 @@
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                     <th scope="col">Обобщение</th>
+                    <th scope="col">История</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -92,13 +100,19 @@
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
                         <td th:text="${call.call_duration_secs}"></td>
-                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                         <td>
                             <button class="btn btn-secondary" data-toggle="collapse"
                                     th:data-target="'#failed-info' + ${call.convId}">
                                 Детайли
                             </button>
+                        </td>
+                        <td>
+                            <form action="#" th:action="@{/eleven-labs/num-history(number=${call.to})}" method="get" style="display:inline;">
+                                <input type="hidden" name="phNumber" th:value="${call.to}">
+                                <button class="btn btn-warning" type="submit">История</button>
+                            </form>
                         </td>
                     </tr>
                     <tr class="collapse" th:id="'failed-info' + ${call.convId}">
@@ -132,8 +146,8 @@
                         <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
-                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                         <td th:text="${{call.type == 'outbound'} ? 'Изх. обаждане' : 'Вх. обаждане'}"></td>
                         <td>
                             <form action="#" th:action="@{/eleven-labs/num-history(number=${call.to})}" method="get" style="display:inline;">
@@ -162,8 +176,8 @@
                         <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
-                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                     </tr>
                 </th:block>
                 </tbody>
@@ -186,8 +200,8 @@
                         <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
-                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                         <td>
                             <button class="btn btn-secondary" data-toggle="collapse"
                                     th:data-target="'#inbound-info' + ${call.convId}">
