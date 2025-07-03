@@ -22,6 +22,7 @@
                     <th scope="col">Дата</th>
                     <th scope="col">Час</th>
                     <th scope="col">Вид обаждане</th>
+                    <th scope="col">Обобщение</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,21 @@
                         <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
                         <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                         <td th:text="${{call.type == 'outbound'} ? 'Изх. обаждане' : 'Вх. обаждане'}"></td>
+                        <td>
+                            <button class="btn btn-secondary" data-toggle="collapse"
+                                    th:data-target="'#history-info' + ${call.convId}">
+                                Детайли
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" th:id="'history-info' + ${call.convId}">
+                        <td colspan="6" class="bg-light">
+                                <span th:if="${call.summary != null and call.summary != ''}"
+                                      th:text="'Обобщение: ' + ${call.summary}"></span>
+                            <span th:unless="${call.summary != null and call.summary != ''}">
+                                    <i>Няма обобщение на разговора</i>
+                                </span>
+                        </td>
                     </tr>
                 </th:block>
                 </tbody>
