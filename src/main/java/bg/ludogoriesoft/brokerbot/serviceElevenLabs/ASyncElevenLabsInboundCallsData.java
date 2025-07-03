@@ -9,6 +9,7 @@ import bg.ludogoriesoft.brokerbot.modelElevenLabs.ConversationData;
 import bg.ludogoriesoft.brokerbot.repositoryElevenLabs.CallRepositoryElevenLabs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -21,8 +22,8 @@ public class ASyncElevenLabsInboundCallsData {
     private final BotClientElevenLabs botClientElevenLabs;
     private final CallRepositoryElevenLabs callRepositoryElevenLabs;
 
-    //@Async
-    @Scheduled(fixedRate = 90000)//1 hour 3 600 000  // 30 min  1 800 000
+    @Async
+    @Scheduled(fixedRate = 1800000)//1 hour 3 600 000  // 30 min  1 800 000
     public void getAllInboundCalls(){
         Conversations conversations = getConversationsDataList();
         for(ConversationData conversationData : conversations.getConversationsData()){
