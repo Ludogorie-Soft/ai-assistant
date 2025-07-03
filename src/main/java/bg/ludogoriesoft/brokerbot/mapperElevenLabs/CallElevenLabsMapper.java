@@ -14,8 +14,7 @@ public class CallElevenLabsMapper {
                 .to(callDataResponseElevenLabs.getMetadata().getPhoneCall().getExternalNumber())
                 .type(callDataResponseElevenLabs.getMetadata().getPhoneCall().getDirection())
                 .call_duration_secs(callDataResponseElevenLabs.getMetadata().getCallDurationSecs())
-                .callDate(getCallDate(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
-                .callTime(getCallTime(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
+                .callDateTime(getCallDateTime(Instant.ofEpochSecond(callDataResponseElevenLabs.getMetadata().getStartTimeUnixSecs())))
                 .build();
     }
 
@@ -26,15 +25,8 @@ public class CallElevenLabsMapper {
         return null;
     }
 
-    private static LocalDate getCallDate(Instant callDateTime) {
+        private static LocalDateTime getCallDateTime(Instant callDateTime) {
         ZoneId zoneId = ZoneId.of("Europe/Sofia");
-        LocalDateTime localDateTime = callDateTime.atZone(zoneId).toLocalDateTime();
-        return localDateTime.toLocalDate();
-    }
-
-    private static LocalTime getCallTime(Instant callDateTime) {
-        ZoneId zoneId = ZoneId.of("Europe/Sofia");
-        LocalDateTime localDateTime = callDateTime.atZone(zoneId).toLocalDateTime();
-        return localDateTime.toLocalTime();
+        return callDateTime.atZone(zoneId).toLocalDateTime();
     }
 }
