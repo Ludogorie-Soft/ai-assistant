@@ -26,12 +26,12 @@
                 </thead>
                 <tbody>
                 <th:block th:each="call : ${numberHistory}">
-                    <tr>
+                    <tr th:classappend="${call.isVisitConfirmed == null ? 'table-secondary' : (call.isVisitConfirmed ? 'table-success' : 'table-danger')}">
                         <th scope="row" th:text="${call.convId}"
                             style="white-space: normal; word-break: break-all;"></th>
                         <td th:text="${call.to}"></td>
-                        <td th:text="${#temporals.format(call.callDate, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${#temporals.format(call.callTime, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${#temporals.format(call.callDateTime, 'HH:mm')}"></td>
                         <td th:text="${{call.type == 'outbound'} ? 'Изх. обаждане' : 'Вх. обаждане'}"></td>
                     </tr>
                 </th:block>
