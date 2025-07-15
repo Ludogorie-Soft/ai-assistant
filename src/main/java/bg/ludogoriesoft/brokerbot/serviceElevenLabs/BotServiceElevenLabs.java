@@ -67,16 +67,26 @@ public class BotServiceElevenLabs {
     }
 
     public List<CallElevenLabs> getMyUnansweredCalls(String email) {
-        return getLastUnansweredCalls(callRepositoryElevenLabs.findUnansweredCallsByUser(getUserOrThrow(email)));
+        return getLastUnansweredCalls(callRepositoryElevenLabs.findUnansweredCallsByUser(getUserOrThrow(email)), email);
     }
 
-    private List<CallElevenLabs> getLastUnansweredCalls(List<CallElevenLabs> allUnansweredCalls){
+    private List<CallElevenLabs> getLastUnansweredCalls(List<CallElevenLabs> allUnansweredCalls, String email){
         List<CallElevenLabs> lastUnansweredCalls = new ArrayList<>();
         List<String> checkNumbers = new ArrayList<>();
-        for(CallElevenLabs calls : allUnansweredCalls){
-            if(!checkNumbers.contains(calls.getTo())){
-                lastUnansweredCalls.addAll(getUnansweredConversationsHistoryByNumber(calls.getTo()));
-                checkNumbers.add(calls.getTo());
+
+        //check each number from allUnanswered calls for last answered call
+        //if don`t have any then add this one to list
+        for(CallElevenLabs call : allUnansweredCalls){
+            if(!checkNumbers.contains(call.getTo())){
+                List<CallElevenLabs> unansweredCalls = getUnansweredConversationsHistoryByNumber(call.getTo(), email);
+                if(unansweredCalls == null){
+                    //if unanswered calls is null
+                    //then add this call to last unanswered
+                    lastUnansweredCalls.add(call);
+                    break;
+                }
+                lastUnansweredCalls.addAll(unansweredCalls);
+                checkNumbers.add(call.getTo());
             }
         }
         return lastUnansweredCalls;
@@ -90,17 +100,26 @@ public class BotServiceElevenLabs {
         return callRepositoryElevenLabs.findInboundCalls();
     }
 
-    public List<CallElevenLabs> getUnansweredConversationsHistoryByNumber(String number){
-        CallElevenLabs lastAnsweredCall = getLastTimeWhenNumberIsAnswer(number);
-        return callRepositoryElevenLabs.findUnansweredCallsByNumber(number, lastAnsweredCall.getCallDateTime());
+    public List<CallElevenLabs> getUnansweredConversationsHistoryByNumber(String number, String email){
+        CallElevenLabs lastAnsweredCall = getLastTimeWhenNumberIsAnswer(number, email);
+        if(lastAnsweredCall != null){
+            return callRepositoryElevenLabs.findUnansweredCallsByNumber(number, lastAnsweredCall.getCallDateTime());
+        } else {
+            return null;
+        }
     }
 
     public List<CallElevenLabs> getConversationHistoryByNumber(String number){
         return callRepositoryElevenLabs.findAllCallsByNumber(number);
     }
 
-    public CallElevenLabs getLastTimeWhenNumberIsAnswer(String number){
-        return callRepositoryElevenLabs.findLastAnsweredCallByNumber(number).getLast();
+    public CallElevenLabs getLastTimeWhenNumberIsAnswer(String number, String email){
+        List<CallElevenLabs> calls = callRepositoryElevenLabs.findLastAnsweredCallByNumber(number, getUserOrThrow(email));
+        if(!calls.isEmpty()) {
+            return calls.getLast();
+        } else {
+            return null;
+        }
     }
 
 }
