@@ -34,6 +34,6 @@ public interface CallRepositoryElevenLabs extends JpaRepository<CallElevenLabs, 
     @Query("SELECT c FROM CallElevenLabs c WHERE c.to = :number ORDER BY c.callDateTime DESC")
     List<CallElevenLabs> findAllCallsByNumber(@Param("number") String number);
 
-    @Query("SELECT c FROM CallElevenLabs c WHERE c.to = :number AND c.isVisitConfirmed IS NOT NULL ORDER BY c.callDateTime ASC")
-    List<CallElevenLabs> findLastAnsweredCallByNumber(@Param("number") String number);
+    @Query("SELECT c FROM CallElevenLabs c WHERE c.user = :user AND c.to = :number AND c.isVisitConfirmed IS NOT NULL ORDER BY c.callDateTime ASC")
+    List<CallElevenLabs> findLastAnsweredCallByNumber(@Param("number") String number, @Param("user") User user);
 }
