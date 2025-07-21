@@ -1,5 +1,6 @@
 package bg.ludogoriesoft.brokerbot.clientElevenLabs;
 
+import bg.ludogoriesoft.brokerbot.config.FeignClientConfig;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.Conversations;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.CallBodyElevenLabs;
 import bg.ludogoriesoft.brokerbot.modelElevenLabs.CallDataResponseElevenLabs;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @FeignClient(name = "botClientElevenLabs", url = "https://api.elevenlabs.io",
-        configuration = CustomRequestInterceptorElevenLabs.class)
+        configuration = {CustomRequestInterceptorElevenLabs.class, FeignClientConfig.class})
 public interface BotClientElevenLabs {
 
     @PostMapping("/v1/convai/twilio/outbound-call")
