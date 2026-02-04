@@ -8,8 +8,8 @@ COPY src ./src
 # Build the application
 RUN mvn clean package -DskipTests
 
-# Runtime stage
-FROM openjdk:21-jdk-slim
+# Runtime stage (Eclipse Temurin - openjdk image is deprecated)
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 

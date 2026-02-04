@@ -33,6 +33,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/js/**", "/css/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/","/register", "/login", "/history", "/bland").permitAll()
                         .requestMatchers("/**", "/eleven-labs/call", "/eleven-labs/num-history").authenticated()
                 )

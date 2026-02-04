@@ -9,6 +9,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>">
         <title>Направи обаждане</title>
 
         <style>
@@ -358,7 +359,7 @@
         </div>
 
         <!-- jQuery, Popper, Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="/js/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 
@@ -413,21 +414,21 @@
                 });
             });
         </script>
-        <script>
+        <script th:inline="javascript">
             // Disable the button if the user is not authenticated
             document.addEventListener("DOMContentLoaded", function () {
                 let callButton = document.querySelector("#callForm button[type='submit']");
                 if (callButton) {
-                    let isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+                    let isAuthenticated = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
                     if (!isAuthenticated) {
                         callButton.disabled = true;
                     }
                 }
             });
         </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                let showLoginModal = [[${showLoginModal}]];
+        <script th:inline="javascript">
+            $(document).ready(function () {
+                let showLoginModal = /*[[${showLoginModal}]]*/ false;
                 if (showLoginModal) {
                     $('#loginModal').modal('show');
                 }
@@ -444,62 +445,63 @@
 
             function validatePhoneNumber() {
                 let phoneInput = document.getElementById("phoneNumber");
-                let callButton = document.getElementById("callButton");
+                if (!phoneInput) return;
+                
+                let callButton = document.querySelector("#callForm button[type='submit']");
+                if (!callButton) return;
 
                 if (phoneInput.value.length === 9) {
                     phoneInput.classList.remove("is-invalid");
                     callButton.disabled = false;
-                    callButton.classList.remove("btn-secondary");
-                    callButton.classList.add("btn-primary");
+                    callButton.classList.remove("btn-secondary", "disabled");
+                    callButton.classList.add("btn-success");
                 } else {
                     phoneInput.classList.add("is-invalid");
                     callButton.disabled = true;
-                    callButton.classList.remove("btn-primary");
-                    callButton.classList.add("btn-secondary");
+                    callButton.classList.remove("btn-success");
+                    callButton.classList.add("btn-secondary", "disabled");
                 }
             }
         </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                let successMessage = "[[${successReg}]]";
-                if (successMessage) {
-                    let modal = new bootstrap.Modal(document.getElementById('successRegModal'));
-                    modal.show();
-
-                    setTimeout(() => {
-                        modal.hide();
+        <script th:inline="javascript">
+            $(document).ready(function () {
+                let successMessage = /*[[${successReg}]]*/ null;
+                if (successMessage && successMessage !== "null" && successMessage !== "") {
+                    $('#successRegModal').modal('show');
+                    setTimeout(function() {
+                        $('#successRegModal').modal('hide');
                     }, 3000);
                 }
             });
         </script>
-        <script>
+        <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
-                let loginError = "[[${loginError}]]";
-                if (loginError && loginError !== "null") {
+                let loginError = /*[[${loginError}]]*/ null;
+                if (loginError && loginError !== "null" && loginError !== "") {
                     $('#loginModal').modal('show');
                 }
             });
         </script>
-        <script>
+        <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
-                let historyAccessDenied = "[[${historyAccessDenied}]]";
-                if (historyAccessDenied && historyAccessDenied !== "null") {
+                let historyAccessDenied = /*[[${historyAccessDenied}]]*/ null;
+                if (historyAccessDenied && historyAccessDenied !== "null" && historyAccessDenied !== "") {
                     $('#loginModal').modal('show');
                 }
             });
         </script>
-        <script>
+        <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
-                let errorMessage = "[[${nonMatchingPw}]]";
-                if (errorMessage && errorMessage !== "null") {
+                let errorMessage = /*[[${nonMatchingPw}]]*/ null;
+                if (errorMessage && errorMessage !== "null" && errorMessage !== "") {
                     $('#registerModal').modal('show');
                 }
             });
         </script>
-        <script>
+        <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
-                let errorMessage = "[[${existingEmail}]]";
-                if (errorMessage && errorMessage !== "null") {
+                let errorMessage = /*[[${existingEmail}]]*/ null;
+                if (errorMessage && errorMessage !== "null" && errorMessage !== "") {
                     $('#registerModal').modal('show');
                 }
             });
@@ -509,16 +511,17 @@
                 document.querySelector('.alert')?.remove();
             }, 3000);
         </script>
-        <script>
+        <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
-                let loginSuccess = "[[${loggedIn}]]";
-                if (loginSuccess === "true") {
+                let loginSuccess = /*[[${loggedIn}]]*/ null;
+                if (loginSuccess === "true" || loginSuccess === "Successfully logged in") {
                     let messageBox = document.getElementById("loginSuccessMessage");
-                    messageBox.style.display = "block";
-
-                setTimeout(() => {
-                        messageBox.style.display = "none";
-                    }, 3000);
+                    if (messageBox) {
+                        messageBox.style.display = "block";
+                        setTimeout(function() {
+                            messageBox.style.display = "none";
+                        }, 3000);
+                    }
                 }
             });
         </script>

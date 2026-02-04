@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
@@ -23,7 +23,7 @@ services:
     restart: always
 
   app:
-    image: 'ludogoriesoft/ai-assistant'
+    image: 'ludogoriesoft/ai-assistant:bg-number'
     container_name: ai_app
     ports:
       - "8080:8080"
@@ -34,6 +34,8 @@ services:
       AUTHORIZATION_TOKEN: ${AUTHORIZATION_TOKEN}
       TWILIO_ENCRYPTED_KEY: ${TWILIO_ENCRYPTED_KEY}
       ELEVEN_LABS_ENCRYPTED_KEY: ${ELEVEN_LABS_ENCRYPTED_KEY}
+      ELEVENLABS_AGENT_ID: ${ELEVENLABS_AGENT_ID}
+      ELEVENLABS_AGENT_PHONE_ID: ${ELEVENLABS_AGENT_PHONE_ID}
       DB_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

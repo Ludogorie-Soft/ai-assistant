@@ -8,6 +8,7 @@ import bg.ludogoriesoft.brokerbot.repository.UserRepository;
 import bg.ludogoriesoft.brokerbot.repositoryElevenLabs.CallRepositoryElevenLabs;
 import bg.ludogoriesoft.brokerbot.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,12 @@ public class BotServiceElevenLabs {
     private final UserRepository userRepository;
     private final CallRepositoryElevenLabs callRepositoryElevenLabs;
     private final ASyncServiceElevenLabs aSyncServiceElevenLabs;
+
+    @Value("${elevenlabs.agent.id}")
+    private String agentId;
+
+    @Value("${elevenlabs.agent.phone.id}")
+    private String agentPhoneNumberId;
 
     public Map<String, Object> processCall(RequestElevenLabs requestDto, String email) {
         User user = getUserOrThrow(email);
@@ -35,6 +42,8 @@ public class BotServiceElevenLabs {
     public ResponseEntity<CallResponseElevenLabs> makeCall(RequestElevenLabs requestElevenLabs) {
         CallBodyElevenLabs callBodyElevenLabs = new CallBodyElevenLabs();
 
+        callBodyElevenLabs.setAgent_id(agentId);
+        callBodyElevenLabs.setAgent_phone_number_id(agentPhoneNumberId);
         callBodyElevenLabs.setTo_number(formatAsBGPhoneNumber(requestElevenLabs.getPhoneNumber()));
         //Get Prompt  and first message
         callBodyElevenLabs.setConversation_initiation_client_data(
